@@ -5,79 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorting Algorithm Visualizer</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f7f7f7;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #121212, #232323);
+            color: #ffffff;
         }
+        
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 2px solid #fc6900;
-            padding: 20px;
-            background-color: #bef6ff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 900px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        select, button {
+            padding: 12px 20px;
+            background-color: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        select {
+            min-width: 200px;
+        }
+        
+        button:hover, select:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        label {
+            font-size: 16px;
+            margin-right: 10px;
+            font-weight: 300;
+        }
+        
         .array-container {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-top: 20px;
+            height: 400px;
             width: 100%;
-            min-height: 300px;
+            padding: 20px 0;
+            overflow: hidden;
         }
+        
         .array-bar {
             margin: 0 2px;
             width: 15px;
-            background-color: rgb(0, 183, 255);
-            color: #000000;
-            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            border-radius: 4px 4px 0 0;
+            color: #121212;
+            font-size: 10px;
+            font-weight: 600;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            font-weight: bold;
-            transition: all 0.5s ease;
+            padding-bottom: 4px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+        
         .array-bar.active {
-            background-color: rgb(255, 0, 0);
-            transform: translateY(-10px);
+            background-color: #FF416C;
+            box-shadow: 0 0 20px rgba(255, 65, 108, 0.7);
+            transform: translateY(-5px) scale(1.05);
         }
+        
         .array-bar.sorted {
-            background-color: rgb(0, 255, 89);
-            transform: scale(1.1);
+            background-color: #64FFDA;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
+            transform: scale(1.03);
         }
+        
         .array-elements {
+            margin-top: 30px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 10px;
+            white-space: nowrap;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            font-size: 28px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .info {
             margin-top: 20px;
-            font-size: 16px;
-            color: #333;
-        }
-        button {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #0c00f8;
-            color: #000000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #d30b90;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
         }
     </style>
 </head>
 <body>
+    <h1>Sorting Algorithm Visualizer</h1>
     <div class="container">
-        <div class="container">
+        <div class="controls">
             <div>
-                <label for="algorithm">Choose an algorithm:</label>
+                <label for="algorithm">Algorithm:</label>
                 <select id="algorithm">
                     <option value="bubbleSort">Bubble Sort</option>
                     <option value="mergeSort">Merge Sort</option>
@@ -86,27 +155,35 @@
                     <option value="selectionSort">Selection Sort</option>
                     <option value="heapSort">Heap Sort</option>
                 </select>
-                <button onclick="startSort()">Start Sorting</button>
             </div>
-            <div class="array-container" id="array-container"></div>
-            <div class="array-elements" id="array-elements"></div> 
+            <button onclick="startSort()">Visualize</button>
         </div>
+        <div class="array-container" id="array-container"></div>
+        <div class="array-elements" id="array-elements"></div>
+        <div class="info">Active: <span style="color: #FF416C;">■</span> &nbsp; Sorted: <span style="color: #64FFDA;">■</span></div>
+    </div>
 
     <script>
-        let array = Array.from({ length: 40 }, () => Math.floor(Math.random() * 100) + 1);
+        // Generate an array of 40 random elements
+        let array = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100) + 1);
         const container = document.getElementById('array-container');
         const elementsContainer = document.getElementById('array-elements');
+        let isSorting = false;
 
         function createBars(array) {
             container.innerHTML = '';
+            const maxBarHeight = 350;
+            const maxElement = Math.max(...array);
+            
             array.forEach((value) => {
                 const bar = document.createElement('div');
                 bar.classList.add('array-bar');
-                bar.style.height = `${value * 5}px`;
+                const height = (value / maxElement) * maxBarHeight;
+                bar.style.height = `${height}px`;
                 bar.textContent = value;
                 container.appendChild(bar);
             });
-            elementsContainer.textContent = `Array Elements: ${array.join(', ')}`;
+            elementsContainer.textContent = `[${array.join(', ')}]`;
         }
 
         function sleep(ms) {
@@ -117,9 +194,10 @@
             const bars = document.getElementsByClassName('array-bar');
             for (let i = 0; i < array.length - 1; i++) {
                 for (let j = 0; j < array.length - i - 1; j++) {
+                    if (!isSorting) return;
                     bars[j].classList.add('active');
                     bars[j + 1].classList.add('active');
-                    await sleep(100);
+                    await sleep(50);
                     if (array[j] > array[j + 1]) {
                         [array[j], array[j + 1]] = [array[j + 1], array[j]];
                         createBars(array);
@@ -136,197 +214,288 @@
         async function insertionSort() {
             const bars = document.getElementsByClassName('array-bar');
             for (let i = 1; i < array.length; i++) {
+                if (!isSorting) return;
                 let key = array[i];
                 let j = i - 1;
+                bars[i].classList.add('active');
+                await sleep(100);
+                
                 while (j >= 0 && array[j] > key) {
+                    if (!isSorting) return;
                     bars[j].classList.add('active');
-                    bars[j + 1].classList.add('active');
-                    await sleep(100);
+                    await sleep(50);
                     array[j + 1] = array[j];
                     createBars(array);
                     bars[j].classList.remove('active');
-                    bars[j + 1].classList.remove('active');
                     j--;
                 }
                 array[j + 1] = key;
                 createBars(array);
-            }
-            // Mark all elements as sorted
-            for (let i = 0; i < array.length; i++) {
-                bars[i].classList.add('sorted');
-            }
-        }
-
-        async function mergeSort(arr, start = 0) {
-            if (arr.length <= 1) return arr;
-            const middle = Math.floor(arr.length / 2);
-            const left = arr.slice(0, middle);
-            const right = arr.slice(middle);
-
-            const sortedLeft = await mergeSort(left, start);
-            const sortedRight = await mergeSort(right, start + middle);
-
-            return await merge(sortedLeft, sortedRight, start);
-        }
-
-        async function merge(left, right, start) {
-            let resultArray = [], leftIndex = 0, rightIndex = 0;
-            while (leftIndex < left.length && rightIndex < right.length) {
-                const leftBarIndex = start + leftIndex;
-                const rightBarIndex = start + rightIndex + left.length;
-                const leftBar = document.getElementsByClassName('array-bar')[leftBarIndex];
-                const rightBar = document.getElementsByClassName('array-bar')[rightBarIndex];
-                leftBar.classList.add('active');
-                rightBar.classList.add('active');
-                await sleep(100);
-                if (left[leftIndex] < right[rightIndex]) {
-                    resultArray.push(left[leftIndex]);
-                    leftBar.classList.remove('active');
-                    leftIndex++;
-                } else {
-                    resultArray.push(right[rightIndex]);
-                    rightBar.classList.remove('active');
-                    rightIndex++;
-                }
-                createBars(array);
-            }
-            while (leftIndex < left.length) {
-                resultArray.push(left[leftIndex++]);
-            }
-            while (rightIndex < right.length) {
-                resultArray.push(right[rightIndex++]);
-            }
-            const bars = document.getElementsByClassName('array-bar');
-            for (let i = start; i < start + resultArray.length; i++) {
-                bars[i].classList.add('sorted');
-            }
-            return resultArray;
-        }
-
-        async function quickSortHelper(arr, left, right) {
-            if (left >= right) return;
-            const pivotIndex = await partition(arr, left, right);
-            await quickSortHelper(arr, left, pivotIndex - 1);
-            await quickSortHelper(arr, pivotIndex + 1, right);
-        }
-
-        async function partition(arr, left, right) {
-            const pivotValue = arr[right];
-            let pivotIndex = left;
-            for (let i = left; i < right; i++) {
-                const bars = document.getElementsByClassName('array-bar');
-                bars[i].classList.add('active');
-                bars[pivotIndex].classList.add('active');
-                await sleep(100);
-                if (arr[i] < pivotValue) {
-                    [arr[i], arr[pivotIndex]] = [arr[pivotIndex], arr[i]];
-                    pivotIndex++;
-                    createBars(array);
-                }
                 bars[i].classList.remove('active');
-                bars[pivotIndex].classList.remove('active');
+                
+                // Mark sorted portion
+                for (let k = 0; k <= i; k++) {
+                    bars[k].classList.add('sorted');
+                }
             }
-            [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-            createBars(array);
-            return pivotIndex;
+        }
+
+        async function mergeSort() {
+            // Creating a copy of the array
+            const auxArray = [...array];
+            
+            async function mergeSortHelper(start, end) {
+                if (start >= end) return;
+                if (!isSorting) return;
+                
+                const mid = Math.floor((start + end) / 2);
+                await mergeSortHelper(start, mid);
+                await mergeSortHelper(mid + 1, end);
+                await merge(start, mid, end);
+            }
+            
+            async function merge(start, mid, end) {
+                if (!isSorting) return;
+                const bars = document.getElementsByClassName('array-bar');
+                
+                let i = start;
+                let j = mid + 1;
+                let k = 0;
+                const temp = new Array(end - start + 1);
+                
+                while (i <= mid && j <= end) {
+                    if (!isSorting) return;
+                    bars[i].classList.add('active');
+                    bars[j].classList.add('active');
+                    await sleep(50);
+                    
+                    if (array[i] <= array[j]) {
+                        temp[k++] = array[i++];
+                    } else {
+                        temp[k++] = array[j++];
+                    }
+                    
+                    createBars(array);
+                    if (i <= mid) bars[i-1].classList.remove('active');
+                    if (j <= end) bars[j-1].classList.remove('active');
+                }
+                
+                while (i <= mid) {
+                    if (!isSorting) return;
+                    temp[k++] = array[i++];
+                }
+                
+                while (j <= end) {
+                    if (!isSorting) return;
+                    temp[k++] = array[j++];
+                }
+                
+                for (i = start, k = 0; i <= end; i++, k++) {
+                    if (!isSorting) return;
+                    array[i] = temp[k];
+                }
+                
+                createBars(array);
+                
+                // Mark the merged section as sorted
+                for (let i = start; i <= end; i++) {
+                    bars[i].classList.add('sorted');
+                    await sleep(10);
+                }
+            }
+            
+            await mergeSortHelper(0, array.length - 1);
         }
 
         async function quickSort() {
-            await quickSortHelper(array, 0, array.length - 1);
-            // Mark all elements as sorted
-            const bars = document.getElementsByClassName('array-bar');
-            for (let i = 0; i < array.length; i++) {
-                bars[i].classList.add('sorted');
+            async function quickSortHelper(low, high) {
+                if (low < high) {
+                    if (!isSorting) return;
+                    const pi = await partition(low, high);
+                    await quickSortHelper(low, pi - 1);
+                    await quickSortHelper(pi + 1, high);
+                }
             }
-        }
-        async function selectionSort() {
-            const bars = document.getElementsByClassName('array-bar');
-            for (let i = 0; i < array.length; i++) {
-                let minIdx = i;
-                for (let j = i + 1; j < array.length; j++) {
+            
+            async function partition(low, high) {
+                if (!isSorting) return;
+                const bars = document.getElementsByClassName('array-bar');
+                const pivot = array[high];
+                bars[high].classList.add('active');
+                
+                let i = low - 1;
+                
+                for (let j = low; j < high; j++) {
+                    if (!isSorting) return;
                     bars[j].classList.add('active');
-                    bars[minIdx].classList.add('active');
-                    await sleep(200);
-                    if (array[j] < array[minIdx]) {
-                        minIdx = j;
+                    await sleep(50);
+                    
+                    if (array[j] < pivot) {
+                        i++;
+                        [array[i], array[j]] = [array[j], array[i]];
+                        createBars(array);
                     }
+                    
                     bars[j].classList.remove('active');
                 }
+                
+                [array[i + 1], array[high]] = [array[high], array[i + 1]];
+                createBars(array);
+                bars[high].classList.remove('active');
+                
+                // Mark the pivot in its final position
+                bars[i + 1].classList.add('sorted');
+                
+                return i + 1;
+            }
+            
+            await quickSortHelper(0, array.length - 1);
+            
+            // Mark all as sorted at the end
+            const bars = document.getElementsByClassName('array-bar');
+            for (let i = 0; i < array.length; i++) {
+                if (!isSorting) return;
+                bars[i].classList.add('sorted');
+                await sleep(20);
+            }
+        }
+        
+        async function selectionSort() {
+            const bars = document.getElementsByClassName('array-bar');
+            for (let i = 0; i < array.length - 1; i++) {
+                if (!isSorting) return;
+                let minIdx = i;
+                bars[i].classList.add('active');
+                
+                for (let j = i + 1; j < array.length; j++) {
+                    if (!isSorting) return;
+                    bars[j].classList.add('active');
+                    await sleep(50);
+                    
+                    if (array[j] < array[minIdx]) {
+                        if (minIdx !== i) {
+                            bars[minIdx].classList.remove('active');
+                        }
+                        minIdx = j;
+                    } else {
+                        bars[j].classList.remove('active');
+                    }
+                }
+                
                 if (minIdx !== i) {
                     [array[i], array[minIdx]] = [array[minIdx], array[i]];
                     createBars(array);
+                    bars[minIdx].classList.remove('active');
                 }
+                
+                bars[i].classList.remove('active');
                 bars[i].classList.add('sorted');
             }
+            
+            // Mark the last element as sorted
+            bars[array.length - 1].classList.add('sorted');
         }
+        
         async function heapSort() {
             const bars = document.getElementsByClassName('array-bar');
+            
             async function heapify(n, i) {
+                if (!isSorting) return;
                 let largest = i;
                 let left = 2 * i + 1;
                 let right = 2 * i + 2;
-
+                
                 if (left < n && array[left] > array[largest]) {
                     largest = left;
                 }
+                
                 if (right < n && array[right] > array[largest]) {
                     largest = right;
                 }
+                
                 if (largest !== i) {
                     bars[i].classList.add('active');
                     bars[largest].classList.add('active');
-                    await sleep(200);
+                    await sleep(50);
+                    
                     [array[i], array[largest]] = [array[largest], array[i]];
                     createBars(array);
+                    
                     bars[i].classList.remove('active');
                     bars[largest].classList.remove('active');
+                    
                     await heapify(n, largest);
                 }
             }
-
-            let n = array.length;
+            
+            // Build heap
+            const n = array.length;
             for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                if (!isSorting) return;
                 await heapify(n, i);
             }
-
+            
+            // Extract elements from heap one by one
             for (let i = n - 1; i > 0; i--) {
+                if (!isSorting) return;
+                
+                // Move current root to end
+                bars[0].classList.add('active');
+                bars[i].classList.add('active');
+                await sleep(50);
+                
                 [array[0], array[i]] = [array[i], array[0]];
                 createBars(array);
+                
+                bars[0].classList.remove('active');
+                bars[i].classList.remove('active');
+                
+                // Mark sorted element
                 bars[i].classList.add('sorted');
+                
+                // Call heapify on the reduced heap
                 await heapify(i, 0);
             }
+            
+            // Mark the last element
             bars[0].classList.add('sorted');
         }
 
-
         function startSort() {
-    const algorithm = document.getElementById('algorithm').value;
-    array = Array.from({ length: 40 }, () => Math.floor(Math.random() * 100) + 1);
-    createBars(array);
-    switch (algorithm) {
-        case 'bubbleSort':
-            bubbleSort();
-            break;
-        case 'mergeSort':
-            mergeSort(array).then((sortedArray) => {
-                array = sortedArray;
+            // Reset any ongoing sorting
+            isSorting = false;
+            setTimeout(() => {
+                // Generate new array
+                array = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100) + 1);
                 createBars(array);
-            });
-            break;
-        case 'insertionSort':
-            insertionSort();
-            break;
-        case 'quickSort':
-            quickSort();
-            break;
-        case 'selectionSort':
-            selectionSort();
-            break;
-        case 'heapSort':
-            heapSort();
-            break;
-    }
-}
+                
+                // Start new sorting
+                isSorting = true;
+                const algorithm = document.getElementById('algorithm').value;
+                
+                switch (algorithm) {
+                    case 'bubbleSort':
+                        bubbleSort();
+                        break;
+                    case 'mergeSort':
+                        mergeSort();
+                        break;
+                    case 'insertionSort':
+                        insertionSort();
+                        break;
+                    case 'quickSort':
+                        quickSort();
+                        break;
+                    case 'selectionSort':
+                        selectionSort();
+                        break;
+                    case 'heapSort':
+                        heapSort();
+                        break;
+                }
+            }, 100);
+        }
+
         // Initialize array bars
         createBars(array);
     </script>
