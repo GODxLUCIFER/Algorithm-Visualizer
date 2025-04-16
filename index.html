@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorting Algorithm Visualizer</title>
+    <title>3D Sorting Algorithm Visualizer</title>
     <style>
         * {
             margin: 0;
@@ -20,6 +20,8 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #121212, #232323);
             color: #ffffff;
+            perspective: 1000px;
+            overflow-x: hidden;
         }
         
         .container {
@@ -32,9 +34,11 @@
             padding: 30px;
             background-color: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
+            transform-style: preserve-3d;
+            transform: rotateX(10deg);
         }
         
         .controls {
@@ -44,9 +48,10 @@
             justify-content: center;
             margin-bottom: 30px;
             width: 100%;
+            transform-style: preserve-3d;
         }
         
-        select, button {
+        button {
             padding: 12px 20px;
             background-color: rgba(255, 255, 255, 0.06);
             color: #ffffff;
@@ -56,16 +61,50 @@
             cursor: pointer;
             transition: all 0.3s ease;
             outline: none;
+            transform-style: preserve-3d;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         select {
+            padding: 12px 20px;
             min-width: 200px;
+            background-color: rgba(100, 65, 255, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(100, 65, 255, 0.4);
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+            transform-style: preserve-3d;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        button:hover, select:hover {
+        button:hover {
             background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateZ(15px) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        select:hover {
+            background-color: rgba(100, 65, 255, 0.3);
+            transform: translateZ(15px) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(100, 65, 255, 0.3);
+        }
+        
+        select:focus {
+            border-color: rgba(100, 65, 255, 0.8);
+            box-shadow: 0 0 0 2px rgba(100, 65, 255, 0.3);
         }
         
         label {
@@ -81,13 +120,15 @@
             height: 400px;
             width: 100%;
             padding: 20px 0;
-            overflow: hidden;
+            transform-style: preserve-3d;
+            transform: rotateX(20deg) translateZ(20px);
+            perspective: 1000px;
         }
         
         .array-bar {
             margin: 0 2px;
             width: 15px;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
             border-radius: 4px 4px 0 0;
             color: #121212;
@@ -98,18 +139,35 @@
             align-items: flex-end;
             padding-bottom: 4px;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            position: relative;
+            transform-origin: bottom center;
+        }
+        
+        .array-bar::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            transform: rotateX(-90deg) translateZ(-2px) scaleY(0.2);
+            transform-origin: bottom;
+            filter: blur(2px);
+            border-radius: 2px;
         }
         
         .array-bar.active {
             background-color: #FF416C;
             box-shadow: 0 0 20px rgba(255, 65, 108, 0.7);
-            transform: translateY(-5px) scale(1.05);
+            transform: translateY(-5px) scale(1.05) translateZ(20px);
         }
         
         .array-bar.sorted {
             background-color: #64FFDA;
             box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
-            transform: scale(1.03);
+            transform: scale(1.03) translateZ(10px);
         }
         
         .array-elements {
@@ -123,6 +181,8 @@
             white-space: nowrap;
             border-radius: 8px;
             background-color: rgba(255, 255, 255, 0.03);
+            transform: translateZ(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         h1 {
@@ -131,6 +191,9 @@
             letter-spacing: 1px;
             font-size: 28px;
             color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
         }
         
         .info {
@@ -138,11 +201,52 @@
             font-size: 14px;
             color: rgba(255, 255, 255, 0.5);
             text-align: center;
+            transform: translateZ(5px);
+        }
+        
+        .floor {
+            position: absolute;
+            width: 150%;
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0), rgba(100, 65, 255, 0.05));
+            transform: rotateX(75deg) translateY(100px) translateZ(-100px);
+            z-index: -1;
+            border-radius: 50%;
+            filter: blur(10px);
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+        
+        .array-container:hover {
+            animation: hover-animation 2s infinite alternate ease-in-out;
+        }
+        
+        @keyframes hover-animation {
+            0% {
+                transform: rotateX(20deg) translateZ(20px);
+            }
+            100% {
+                transform: rotateX(25deg) translateZ(30px);
+            }
+        }
+        
+        .visualizer-scene {
+            position: relative;
+            transform-style: preserve-3d;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <h1>Sorting Algorithm Visualizer</h1>
+    <div class="floor"></div>
+    <h1>3D Sorting Algorithm Visualizer</h1>
     <div class="container">
         <div class="controls">
             <div>
@@ -158,29 +262,49 @@
             </div>
             <button onclick="startSort()">Visualize</button>
         </div>
-        <div class="array-container" id="array-container"></div>
+        <div class="visualizer-scene">
+            <div class="array-container" id="array-container"></div>
+        </div>
         <div class="array-elements" id="array-elements"></div>
         <div class="info">Active: <span style="color: #FF416C;">■</span> &nbsp; Sorted: <span style="color: #64FFDA;">■</span></div>
     </div>
 
     <script>
-        // Generate an array of 40 random elements
+        // Generate an array of random elements
         let array = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100) + 1);
         const container = document.getElementById('array-container');
         const elementsContainer = document.getElementById('array-elements');
         let isSorting = false;
+
+        // Add mouse movement effect for 3D perspective
+        document.addEventListener('mousemove', function(e) {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            
+            const container = document.querySelector('.container');
+            container.style.transform = `rotateX(${10 - yAxis / 2}deg) rotateY(${xAxis / 2}deg)`;
+            
+            const arrayContainer = document.querySelector('.array-container');
+            arrayContainer.style.transform = `rotateX(${20 - yAxis / 3}deg) translateZ(20px)`;
+        });
 
         function createBars(array) {
             container.innerHTML = '';
             const maxBarHeight = 350;
             const maxElement = Math.max(...array);
             
-            array.forEach((value) => {
+            array.forEach((value, index) => {
                 const bar = document.createElement('div');
                 bar.classList.add('array-bar');
                 const height = (value / maxElement) * maxBarHeight;
                 bar.style.height = `${height}px`;
                 bar.textContent = value;
+                
+                // Add 3D transform with slight rotation based on position
+                const middleIndex = array.length / 2;
+                const rotationFactor = (index - middleIndex) / middleIndex * 10;
+                bar.style.transform = `rotateY(${rotationFactor}deg) translateZ(${Math.abs(rotationFactor) * 2}px)`;
+                
                 container.appendChild(bar);
             });
             elementsContainer.textContent = `[${array.join(', ')}]`;
