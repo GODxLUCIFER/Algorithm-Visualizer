@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Sorting Algorithm Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -22,6 +23,7 @@
             color: #ffffff;
             perspective: 1000px;
             overflow-x: hidden;
+            transition: background 0.5s ease;
         }
         
         .container {
@@ -39,6 +41,7 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             transform-style: preserve-3d;
             transform: rotateX(10deg);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
         
         .controls {
@@ -123,25 +126,30 @@
             transform-style: preserve-3d;
             transform: rotateX(20deg) translateZ(20px);
             perspective: 1000px;
+            transition: transform 0.5s ease;
         }
         
         .array-bar {
-            margin: 0 2px;
-            width: 15px;
-            background-color: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            border-radius: 4px 4px 0 0;
-            color: #121212;
+            margin: 0 3px;
+            width: 25px;
+            background-color: #808B96;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+            border-radius: 5px 5px 0 0;
+            color: #fff;
             font-size: 10px;
-            font-weight: 600;
+            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: flex-end;
             padding-bottom: 4px;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.2s ease-in-out;
             transform-style: preserve-3d;
             position: relative;
             transform-origin: bottom center;
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.1) 10%, transparent 10%, transparent 90%),
+                linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.1) 10%, transparent 10%, transparent 90%);
+            background-size: 10px 10px;
         }
         
         .array-bar::after {
@@ -151,8 +159,8 @@
             height: 100%;
             bottom: -5px;
             left: 0;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
-            transform: rotateX(-90deg) translateZ(-2px) scaleY(0.2);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            transform: rotateX(-90deg) translateZ(-2px) scaleY(0.1);
             transform-origin: bottom;
             filter: blur(2px);
             border-radius: 2px;
@@ -165,8 +173,8 @@
         }
         
         .array-bar.sorted {
-            background-color: #64FFDA;
-            box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
+            background-color: blue;
+            box-shadow: 2px 2px 12px rgba(0, 0, 255, 0.6);
             transform: scale(1.03) translateZ(10px);
         }
         
@@ -213,6 +221,7 @@
             z-index: -1;
             border-radius: 50%;
             filter: blur(10px);
+            transition: background 0.5s ease;
         }
         
         @keyframes rotate {
@@ -242,6 +251,101 @@
             transform-style: preserve-3d;
             width: 100%;
         }
+        
+        #day-mode, #night-mode {
+            padding: 0;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            transform-style: preserve-3d;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        #day-mode {
+            background-color: rgba(255, 223, 0, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(255, 223, 0, 0.3);
+        }
+        
+        #night-mode {
+            background-color: rgba(138, 43, 226, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        #day-mode:hover {
+            background-color: rgba(255, 223, 0, 0.3);
+            transform: translateZ(15px) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 223, 0, 0.4);
+        }
+        
+        #night-mode:hover {
+            background-color: rgba(138, 43, 226, 0.3);
+            transform: translateZ(15px) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .sun-3d {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .sun-circle {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+
+        .sun-ray {
+            position: absolute;
+            background: #FFD700;
+            width: 4px;
+            height: 12px;
+            border-radius: 2px;
+            left: 50%;
+            top: 50%;
+            margin-left: -2px;
+            margin-top: -6px;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .moon-3d {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .moon-circle {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #E6E6FA;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(230, 230, 250, 0.7);
+        }
+
+        .moon-shadow {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(20, 20, 40, 0.9);
+            border-radius: 50%;
+            top: -5px;
+            right: -5px;
+        }
     </style>
 </head>
 <body>
@@ -261,39 +365,97 @@
                 </select>
             </div>
             <button onclick="startSort()">Visualize</button>
+            <div style="display: flex; gap: 10px;">
+                <button id="day-mode" onclick="setDayMode()">
+                    <div class="sun-3d">
+                        <div class="sun-circle"></div>
+                        <div class="sun-ray" style="transform: rotate(0deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(45deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(90deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(135deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(180deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(225deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(270deg) translateY(-20px);"></div>
+                        <div class="sun-ray" style="transform: rotate(315deg) translateY(-20px);"></div>
+                    </div>
+                </button>
+                <button id="night-mode" onclick="setNightMode()">
+                    <div class="moon-3d">
+                        <div class="moon-circle"></div>
+                        <div class="moon-shadow"></div>
+                    </div>
+                </button>
+            </div>
         </div>
         <div class="visualizer-scene">
             <div class="array-container" id="array-container"></div>
         </div>
         <div class="array-elements" id="array-elements"></div>
-        <div class="info">Active: <span style="color: #FF416C;">■</span> &nbsp; Sorted: <span style="color: #64FFDA;">■</span></div>
+        <div class="info">Active: <span style="color: #FF416C;">■</span> &nbsp; Sorted: <span style="color: blue;">■</span></div>
     </div>
 
     <script>
         // Generate an array of random elements
-        let array = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100) + 1);
+        let array = Array.from({ length: 40 }, () => Math.floor(Math.random() * 100) + 1);
         const container = document.getElementById('array-container');
         const elementsContainer = document.getElementById('array-elements');
         let isSorting = false;
+        
+        const body = document.body;
+        const containerElement = document.querySelector('.container');
+        const floor = document.querySelector('.floor');
+        
+        function setDayMode() {
+            body.style.background = 'linear-gradient(135deg, #f6d365, #fda085)';
+            containerElement.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+            containerElement.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            
+            const bars = document.querySelectorAll('.array-bar');
+            bars.forEach(bar => {
+                if (!bar.classList.contains('active') && !bar.classList.contains('sorted')) {
+                    bar.style.backgroundColor = '#ffb703';
+                    bar.style.boxShadow = '2px 2px 5px rgba(255, 190, 0, 0.5)';
+                    bar.style.color = '#333';
+                }
+            });
+            
+            floor.style.background = 'linear-gradient(rgba(0, 0, 0, 0), rgba(255, 223, 0, 0.1))';
+        }
+        
+        function setNightMode() {
+            body.style.background = 'linear-gradient(135deg, #121212, #232323)';
+            containerElement.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+            containerElement.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            
+            const bars = document.querySelectorAll('.array-bar');
+            bars.forEach(bar => {
+                if (!bar.classList.contains('active') && !bar.classList.contains('sorted')) {
+                    bar.style.backgroundColor = '#808B96';
+                    bar.style.boxShadow = '2px 2px 8px rgba(0, 0, 0, 0.4)';
+                    bar.style.color = '#fff';
+                }
+            });
+            
+            floor.style.background = 'linear-gradient(rgba(0, 0, 0, 0), rgba(100, 65, 255, 0.05))';
+        }
 
         // Add mouse movement effect for 3D perspective
         document.addEventListener('mousemove', function(e) {
             const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
             const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
             
-            const container = document.querySelector('.container');
-            container.style.transform = `rotateX(${10 - yAxis / 2}deg) rotateY(${xAxis / 2}deg)`;
+            containerElement.style.transform = `rotateX(${10 - yAxis / 2}deg) rotateY(${xAxis / 2}deg)`;
             
             const arrayContainer = document.querySelector('.array-container');
             arrayContainer.style.transform = `rotateX(${20 - yAxis / 3}deg) translateZ(20px)`;
         });
 
-        function createBars(array) {
+        function createBars(arr) {
             container.innerHTML = '';
             const maxBarHeight = 350;
-            const maxElement = Math.max(...array);
+            const maxElement = Math.max(...arr);
             
-            array.forEach((value, index) => {
+            arr.forEach((value, index) => {
                 const bar = document.createElement('div');
                 bar.classList.add('array-bar');
                 const height = (value / maxElement) * maxBarHeight;
@@ -301,13 +463,13 @@
                 bar.textContent = value;
                 
                 // Add 3D transform with slight rotation based on position
-                const middleIndex = array.length / 2;
+                const middleIndex = arr.length / 2;
                 const rotationFactor = (index - middleIndex) / middleIndex * 10;
                 bar.style.transform = `rotateY(${rotationFactor}deg) translateZ(${Math.abs(rotationFactor) * 2}px)`;
                 
                 container.appendChild(bar);
             });
-            elementsContainer.textContent = `[${array.join(', ')}]`;
+            elementsContainer.textContent = `[${arr.join(', ')}]`;
         }
 
         function sleep(ms) {
@@ -332,7 +494,7 @@
                 // Mark the sorted element
                 bars[array.length - 1 - i].classList.add('sorted');
             }
-            bars[0].classList.add('sorted'); // Last element
+            bars[0].classList.add('sorted');
         }
 
         async function insertionSort() {
@@ -365,70 +527,75 @@
         }
 
         async function mergeSort() {
-            // Creating a copy of the array
             const auxArray = [...array];
+            const tempArray = [...array];
             
-            async function mergeSortHelper(start, end) {
-                if (start >= end) return;
-                if (!isSorting) return;
-                
-                const mid = Math.floor((start + end) / 2);
-                await mergeSortHelper(start, mid);
-                await mergeSortHelper(mid + 1, end);
-                await merge(start, mid, end);
+            async function mergeSortHelper(left, right) {
+                if (left < right) {
+                    const mid= Math.floor((left + right) / 2);
+                    await mergeSortHelper(left, mid);
+                    await mergeSortHelper(mid + 1, right);
+                    await merge(left, mid, right);
+                }
             }
             
-            async function merge(start, mid, end) {
+            async function merge(left, mid, right) {
                 if (!isSorting) return;
+                
                 const bars = document.getElementsByClassName('array-bar');
                 
-                let i = start;
-                let j = mid + 1;
-                let k = 0;
-                const temp = new Array(end - start + 1);
-                
-                while (i <= mid && j <= end) {
+                // Highlight the sections being merged
+                for (let i = left; i <= right; i++) {
                     if (!isSorting) return;
                     bars[i].classList.add('active');
-                    bars[j].classList.add('active');
-                    await sleep(50);
-                    
-                    if (array[i] <= array[j]) {
-                        temp[k++] = array[i++];
-                    } else {
-                        temp[k++] = array[j++];
-                    }
-                    
-                    createBars(array);
-                    if (i <= mid) bars[i-1].classList.remove('active');
-                    if (j <= end) bars[j-1].classList.remove('active');
+                }
+                await sleep(30);
+                
+                // Copy to auxArray
+                for (let i = left; i <= right; i++) {
+                    auxArray[i] = array[i];
                 }
                 
+                let i = left;
+                let j = mid + 1;
+                let k = left;
+                
+                while (i <= mid && j <= right) {
+                    if (!isSorting) return;
+                    
+                    if (auxArray[i] <= auxArray[j]) {
+                        array[k] = auxArray[i];
+                        i++;
+                    } else {
+                        array[k] = auxArray[j];
+                        j++;
+                    }
+                    k++;
+                    createBars(array);
+                    await sleep(30);
+                }
+                
+                // Copy remaining elements
                 while (i <= mid) {
                     if (!isSorting) return;
-                    temp[k++] = array[i++];
+                    array[k] = auxArray[i];
+                    i++;
+                    k++;
+                    createBars(array);
+                    await sleep(30);
                 }
                 
-                while (j <= end) {
-                    if (!isSorting) return;
-                    temp[k++] = array[j++];
-                }
-                
-                for (i = start, k = 0; i <= end; i++, k++) {
-                    if (!isSorting) return;
-                    array[i] = temp[k];
-                }
-                
-                createBars(array);
-                
-                // Mark the merged section as sorted
-                for (let i = start; i <= end; i++) {
+                // Remove active highlights
+                for (let i = left; i <= right; i++) {
+                    bars[i].classList.remove('active');
+                    // Mark as sorted
                     bars[i].classList.add('sorted');
-                    await sleep(10);
                 }
             }
             
-            await mergeSortHelper(0, array.length - 1);
+            if (isSorting) {
+                await mergeSortHelper(0, array.length - 1);
+            }
         }
 
         async function quickSort() {
@@ -589,8 +756,8 @@
             // Reset any ongoing sorting
             isSorting = false;
             setTimeout(() => {
-                // Generate new array
-                array = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100) + 1);
+                // Generate new array with fewer elements for better performance
+                array = Array.from({ length: 40 }, () => Math.floor(Math.random() * 100) + 1);
                 createBars(array);
                 
                 // Start new sorting
@@ -622,6 +789,8 @@
 
         // Initialize array bars
         createBars(array);
+        setNightMode();
     </script>
 </body>
 </html>
+
