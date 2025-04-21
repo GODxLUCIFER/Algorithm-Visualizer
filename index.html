@@ -785,6 +785,226 @@
             bars[0].classList.add('sorted');
         }
 
+        async function shellSort() {
+            const bars = document.getElementsByClassName('array-bar');
+            let n = array.length;
+
+            for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+                for (let i = gap; i < n; i++) {
+                    let temp = array[i];
+                    let j = i;
+
+                    // Highlight the current bar
+                    bars[i].classList.add('active');
+                    await sleep(50);
+
+                    while (j >= gap && 
+                           ((order === 'ascending' && array[j - gap] > temp) || 
+                            (order === 'descending' && array[j - gap] < temp))) {
+                        if (!isSorting) return;
+                        bars[j].classList.add('active');
+                        bars[j - gap].classList.add('active');
+                        await sleep(50);
+
+                        array[j] = array[j - gap];
+                        createBars(array);
+
+                        bars[j].classList.remove('active');
+                        bars[j - gap].classList.remove('active');
+
+                        j -= gap;
+                    }
+
+                    array[j] = temp;
+                    createBars(array);
+                    bars[i].classList.remove('active');
+                    bars[j].classList.add('sorted'); // Optionally mark as "sorted"
+                }
+            }
+
+            // Optionally mark all bars as sorted at the end
+            for (let i = 0; i < n; i++) {
+                bars[i].classList.add('sorted');
+            }
+        }
+
+        async function cocktailSort() {
+            const bars = document.getElementsByClassName('array-bar');
+            let swapped = true;
+            let start = 0;
+            let end = array.length - 1;
+
+            while (swapped && isSorting) {
+                swapped = false;
+
+                // Forward pass (left to right)
+                for (let i = start; i < end; i++) {
+                    if (!isSorting) return;
+                    bars[i].classList.add('active');
+                    bars[i + 1].classList.add('active');
+                    await sleep(50);
+
+                    if (
+                        (order === 'ascending' && array[i] > array[i + 1]) ||
+                        (order === 'descending' && array[i] < array[i + 1])
+                    ) {
+                        [array[i], array[i + 1]] = [array[i + 1], array[i]];
+                        createBars(array);
+                        swapped = true;
+                    }
+                    bars[i].classList.remove('active');
+                    bars[i + 1].classList.remove('active');
+                }
+                if (!swapped) break;
+                end--;
+
+                // Backward pass (right to left)
+                for (let i = end; i > start; i--) {
+                    if (!isSorting) return;
+                    bars[i].classList.add('active');
+                    bars[i - 1].classList.add('active');
+                    await sleep(50);
+                    if (
+                        (order === 'ascending' && array[i - 1] > array[i]) ||
+                        (order === 'descending' && array[i - 1] < array[i])
+                    ) {
+                        [array[i - 1], array[i]] = [array[i], array[i - 1]];
+                        createBars(array);
+                        swapped = true;
+                    }
+                    bars[i].classList.remove('active');
+                    bars[i - 1].classList.remove('active');
+                }
+                start++;
+            }
+
+            // Mark all elements as sorted
+            if (isSorting) {
+                for (let i = 0; i < array.length; i++) {
+                    bars[i].classList.add('sorted');
+                }
+            }
+        }
+
+        async function radixSort() {
+            const bars = document.getElementsByClassName('array-bar');
+            const maxNum = Math.max(...array);
+            let divisor = 1;
+
+            while (divisor <= maxNum) {
+                let buckets = Array.from({ length: 10 }, () => []); // 10 buckets for digits 0-9
+
+                // Distribute elements into buckets based on the current digit
+                for (let i = 0; i < array.length; i++) {
+                    if (!isSorting) return;
+                    const digit = Math.floor((array[i] / divisor) % 10);
+                    buckets[digit].push(array[i]);
+
+                    // Highlight the current bar
+                    bars[i].classList.add('active');
+                    await sleep(50);
+                    bars[i].classList.remove('active');
+                }
+
+                let index = 0;
+                // Collect elements from buckets back into the array
+                for (let i = 0; i < 10; i++) {
+                    for (let j = 0; j < buckets[i].length; j++) {
+                        if (!isSorting) return;
+                        array[index] = buckets[i][j];
+                        createBars(array);
+
+                        // Highlight the bar being placed
+                        bars[index].classList.add('active');
+                        await sleep(50);
+                        bars[index].classList.remove('active');
+                        bars[index].classList.add('sorted'); // Mark as sorted
+                        index++;
+                    }
+                }
+                divisor *= 10;
+            }
+        }
+
+        async function cycleSort() {
+            const bars = document.getElementsByClassName('array-bar');
+            const n = array.length;
+
+            for (let cycleStart = 0; cycleStart < n - 1; cycleStart++) {
+                let item = array[cycleStart];
+                let pos = cycleStart;
+
+                for (let i = cycleStart + 1; i < n; i++) {
+                    if (!isSorting) return;
+                    if (
+                        (order === 'ascending' && array[i] < item) ||
+                        (order === 'descending' && array[i] > item)
+                    ) {
+                        pos++;
+                    }
+                }
+
+                if (pos === cycleStart) {
+                    continue;
+                }
+
+                while (
+                    (order === 'ascending' && item === array[pos]) ||
+                    (order === 'descending' && item === array[pos])
+                ) {
+                    pos++;
+                }
+
+                if (pos !== cycleStart) {
+                    bars[cycleStart].classList.add('active');
+                    bars[pos].classList.add('active');
+                    await sleep(100);
+
+                    [array[pos], item] = [item, array[pos]];
+                    createBars(array);
+
+                    bars[cycleStart].classList.remove('active');
+                    bars[pos].classList.remove('active');
+                }
+
+                while (pos !== cycleStart) {
+                    pos = cycleStart;
+                    for (let i = cycleStart + 1; i < n; i++) {
+                        if (!isSorting) return;
+                        if (
+                            (order === 'ascending' && array[i] < item) ||
+                            (order === 'descending' && array[i] > item)
+                        ) {
+                            pos++;
+                        }
+                    }
+
+                    while (
+                        (order === 'ascending' && item === array[pos]) ||
+                        (order === 'descending' && item === array[pos])
+                    ) {
+                        pos++;
+                    }
+
+                    bars[pos].classList.add('active');
+                    bars[cycleStart].classList.add('active');
+                    await sleep(100);
+
+                    [array[pos], item] = [item, array[pos]];
+                    createBars(array);
+
+                    bars[pos].classList.remove('active');
+                    bars[cycleStart].classList.remove('active');
+                }
+                bars[cycleStart].classList.add('sorted');
+            }
+            if (isSorting) {
+                for (let i = 0; i < array.length; i++) {
+                    bars[i].classList.add('sorted');
+                }
+            }
+        }
+
         function startSort() {
             // Reset any ongoing sorting
             isSorting = false;
