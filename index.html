@@ -362,6 +362,17 @@
                     <option value="quickSort">Quick Sort</option>
                     <option value="selectionSort">Selection Sort</option>
                     <option value="heapSort">Heap Sort</option>
+                    <option value="shellSort">Shell Sort</option>
+                    <option value="cocktailSort">Cocktail Sort</option>
+                    <option value="radixSort">Radix Sort</option>
+                    <option value="cycleSort">Cycle Sort</option>
+                </select>
+            </div>
+            <div>
+                <label for="order">Order:</label>
+                <select id="order">
+                    <option value="ascending">Ascending</option>
+                    <option value="descending">Descending</option>
                 </select>
             </div>
             <button onclick="startSort()">Visualize</button>
@@ -400,6 +411,7 @@
         const container = document.getElementById('array-container');
         const elementsContainer = document.getElementById('array-elements');
         let isSorting = false;
+        let order = 'ascending';
         
         const body = document.body;
         const containerElement = document.querySelector('.container');
@@ -484,7 +496,10 @@
                     bars[j].classList.add('active');
                     bars[j + 1].classList.add('active');
                     await sleep(50);
-                    if (array[j] > array[j + 1]) {
+                    if (
+                        (order === 'ascending' && array[j] > array[j + 1]) ||
+                        (order === 'descending' && array[j] < array[j + 1])
+                    ) {
                         [array[j], array[j + 1]] = [array[j + 1], array[j]];
                         createBars(array);
                     }
@@ -506,9 +521,10 @@
                 bars[i].classList.add('active');
                 await sleep(100);
                 
-                while (j >= 0 && array[j] > key) {
-                    if (!isSorting) return;
-                    bars[j].classList.add('active');
+                while (j >= 0 && 
+                       ((order === 'ascending' && array[j] > key) || 
+                        (order === 'descending' && array[j] < key))) {
+                    if (!isSorting) return;bars[j].classList.add('active');
                     await sleep(50);
                     array[j + 1] = array[j];
                     createBars(array);
@@ -563,7 +579,10 @@
                 while (i <= mid && j <= right) {
                     if (!isSorting) return;
                     
-                    if (auxArray[i] <= auxArray[j]) {
+                    if (
+                        (order === 'ascending' && auxArray[i] <= auxArray[j]) ||
+                        (order === 'descending' && auxArray[i] >= auxArray[j])
+                    ) {
                         array[k] = auxArray[i];
                         i++;
                     } else {
@@ -621,7 +640,10 @@
                     bars[j].classList.add('active');
                     await sleep(50);
                     
-                    if (array[j] < pivot) {
+                    if (
+                        (order === 'ascending' && array[j] < pivot) ||
+                        (order === 'descending' && array[j] > pivot)
+                    ) {
                         i++;
                         [array[i], array[j]] = [array[j], array[i]];
                         createBars(array);
@@ -663,7 +685,10 @@
                     bars[j].classList.add('active');
                     await sleep(50);
                     
-                    if (array[j] < array[minIdx]) {
+                    if (
+                        (order === 'ascending' && array[j] < array[minIdx]) ||
+                        (order === 'descending' && array[j] > array[minIdx])
+                    ) {
                         if (minIdx !== i) {
                             bars[minIdx].classList.remove('active');
                         }
@@ -696,11 +721,19 @@
                 let left = 2 * i + 1;
                 let right = 2 * i + 2;
                 
-                if (left < n && array[left] > array[largest]) {
+                if (
+                    left < n &&
+                    ((order === 'ascending' && array[left] > array[largest]) ||
+                     (order === 'descending' && array[left] < array[largest]))
+                ) {
                     largest = left;
                 }
                 
-                if (right < n && array[right] > array[largest]) {
+                if (
+                    right < n &&
+                    ((order === 'ascending' && array[right] > array[largest]) ||
+                     (order === 'descending' && array[right] < array[largest]))
+                ) {
                     largest = right;
                 }
                 
@@ -763,6 +796,7 @@
                 // Start new sorting
                 isSorting = true;
                 const algorithm = document.getElementById('algorithm').value;
+                order = document.getElementById('order').value;
                 
                 switch (algorithm) {
                     case 'bubbleSort':
@@ -783,6 +817,18 @@
                     case 'heapSort':
                         heapSort();
                         break;
+                    case 'shellSort':
+                        shellSort();
+                        break;
+                    case 'cocktailSort':
+                        cocktailSort();
+                        break;
+                    case 'radixSort':
+                        radixSort();
+                        break;
+                    case 'cycleSort':
+                        cycleSort();
+                        break;
                 }
             }, 100);
         }
@@ -793,4 +839,3 @@
     </script>
 </body>
 </html>
-
